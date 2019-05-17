@@ -6,21 +6,45 @@
         <style>
             a {text-decoration: none; color: black;}
         </style>
+        <script>
+            console.log("Loading.");
+
+            function edit_in_place(index, todo) {
+                let debug_str = index + ":" + todo;
+                console.log("Editing in place: " + debug_str);
+
+                let header = document.getElementById("header");
+                header.innerText = "Editing todo " + index;
+
+                let form = document.forms.main;
+                form.action = "/todo/edit/" + index;
+                form.elements.newtodo.value = todo;
+
+                return true;
+            }
+        </script>
     </head>
 
     <body>
         <h1>My todolist</h1>
         <ul>
         <% todolist.forEach(function(todo, index) { %>
-            <li><a href="/todo/delete/<%= index %>">✘</a> <%- todo %></li>
+                <li id="todo-<%= index %>">
+                    <a href="/todo/delete/<%= index %>">✘</a>
+                    <a href="#"
+                       onclick="edit_in_place(<%= index %>, '<%= todo %>');">
+                        ✎
+                    </a>
+                    <%- todo %>
+                </li>
         <% }); %>
         </ul>
-
-        <form action="/todo/add/" method="post">
+        <h2 id="header">Add new todo</h2>
+        <form name="main" action="/todo/add/" method="post">
             <p>
                 <label for="newtodo">What shoud I do?</label>
                 <input type="text" name="newtodo" id="newtodo" autofocus />
-                <input type="submit" />
+                <input type="submit" onclick="submit();"/>
             </p>
         </form>
     </body>
