@@ -44,6 +44,12 @@ Coverage is checked using sinon.
 Install the dependencies using `npm install`.
 Run the tests with coverage using `npm test`.
 
+#### Task 3
+The Dockerfile has been added.
+There is also a simple management script to handle building and running the container on a local machine.
+To build the container run `./manage.py build`.
+To run the built container locally run `./manage.py run`.
+
 #### Bonus 4
 Coverage is measured using sinon and mocha -- run tests with coverage using `npm test`.
 
