@@ -7,5 +7,13 @@
     "express": "^4.14.0"
   },
   "author": "riaan@entersekt.com",
-  "description": "Basic to do list exercise"
+  "description": "Basic to do list exercise",
+  "devDependencies": {
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
+    "supertest": "^4.0.2"
+  },
+  "scripts": {
+    "test": "nyc mocha"
+  }
 }
