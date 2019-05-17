@@ -33,4 +33,17 @@ Visit http://localhost:8080 in your browser
 > - Will be nice if you can git tag the tasks by number
 
 ### Solution
-Explain what you have done here and why...
+#### Task 1
+In the template I added a javascript function which triggers when clicking the edit (pencil) button.
+This function changes the existing form to instead display the item to be edited and then submit it to the edit endpoint.
+I then added the edit endpoint using the route /todo/edit/:id which updates the submitted todo item.
+
+#### Task 2
+Added testing using mocha and supertest.
+Coverage is checked using sinon.
+Install the dependencies using `npm install`.
+Run the tests with coverage using `npm test`.
+
+#### Bonus 4
+Coverage is measured using sinon and mocha -- run tests with coverage using `npm test`.
+
