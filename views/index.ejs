@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+    <head>
+        <title>My To Do List</title>
+        <style>
+            a {text-decoration: none; color: black;}
+        </style>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+        <script>
+            console.log("Loading.");
+
+            function send_data(data_type) {
+                console.log(`Submitting data ${data_type}`);
+            }
+        </script>
+    </head>
+
+    <body>
+        <h1>My To Do List</h1>
+        <div class="list_area"></div>
+        <div class="edit_area">
+            <h1 class="edit_header">Add new todo</h1>
+            <form name="main">
+                <p>
+                    <label for="todo">What should I do?</label>
+                    <input type="text" name="todo" id="todo" autofocus />
+                    <input type="submit" onclick="send_data('new');"/>
+                </p>
+            </form>
+        </div>
+    </body>
+</html>
