@@ -48,24 +48,60 @@ function create_todo(req, res) {
 
 function delete_todo(req, res) {
     let return_status = 500;
-    let return_data = {"error": "Unknown error."};
+    let return_data = {error: "Unknown error."};
 
     let request_id = parseInt(req.params.id);
 
     if (request_id < 0) {
         return_status = 400;
-        return_data = {"error": "Negative IDs not allowed."};
+        return_data = {error: "Negative IDs not allowed."};
     }
 
     if (request_id > todo_list.length - 1) {
         return_status = 400;
-        return_data = {"error": "ID does not exist."};
+        return_data = {error: "ID does not exist."};
     }
+
     if (request_id >= 0 && request_id <= todo_list.length - 1) {
         todo_list.splice(request_id, 1);
         return_status = 200;
-        return_data = {"message": "Deleted."};
+        return_data = {message: "Deleted."};
     }
+    res.status(return_status).json(return_data);
+}
+
+function update_todo(req, res) {
+    let return_status = 500;
+    let return_data = {error: "Unknown error."};
+
+    let request_id = parseInt(req.params.id);
+    let requested_todo = todo_list[request_id];
+
+    let item_defined = typeof requested_todo !== "undefined";
+    let todo_provided = "todo" in req.body;
+    let todo_empty = req.body.todo === "";
+
+    if(!item_defined) {
+        return_status = 400;
+        return_data = {error: "Requested item does not exist."};
+    }
+
+    if (item_defined && !todo_provided) {
+        return_status = 400;
+        return_data.error = "Field 'todo' required.";
+    }
+
+    if (item_defined && todo_provided && todo_empty) {
+        return_status = 400;
+        return_data.error = "Field 'todo' cannot be empty.";
+    }
+
+    if (item_defined && todo_provided && !todo_empty) {
+        todo_list[request_id] = req.body.todo;
+        return_status = 200;
+        return_data = {id: request_id, todo: req.body.todo}
+    }
+
     res.status(return_status).json(return_data);
 }
 
@@ -75,6 +111,7 @@ app.get("/", read_index);
 app.get("/todo/", list_todo);
 app.post("/todo/", create_todo);
 app.delete("/todo/:id", delete_todo);
+app.patch("/todo/:id", update_todo);
 
 let status_str = `My To Do list running on port ${port}!`;
 module.exports = app.listen(port, () => console.log(status_str));
