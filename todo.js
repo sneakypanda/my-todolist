@@ -10,6 +10,7 @@ app.use(json_parser);
 
 function read_index(req, res) {
     res.status(200).render("index.ejs", {});
+    console.debug("Rendering index.");
 }
 
 function list_todo(req, res) {
@@ -17,6 +18,7 @@ function list_todo(req, res) {
     todo_list.forEach((value, index) => {
         output_list.push({id: index, todo: value});
     });
+    console.debug("Returning list of " + output_list.length + " items.");
     res.status(200).json(output_list);
 }
 
@@ -30,11 +32,13 @@ function create_todo(req, res) {
     if (!todo_provided) {
         return_status = 400;
         return_data.error = "Field 'todo' required.";
+        console.error("Field 'todo' not provided.");
     }
 
     if (todo_provided && todo_empty) {
         return_status = 400;
         return_data.error = "Field 'todo' cannot be empty.";
+        console.error("Field 'todo' is empty.");
     }
 
     if (todo_provided && !todo_empty) {
@@ -42,6 +46,7 @@ function create_todo(req, res) {
         let idx = todo_list.push(escaped_todo) -1;
         return_status = 201;
         return_data = {id: idx, todo: escaped_todo};
+        console.info("Created new todo: " + escaped_todo);
     }
 
     res.status(return_status).json(return_data);
@@ -56,17 +61,20 @@ function delete_todo(req, res) {
     if (request_id < 0) {
         return_status = 400;
         return_data = {error: "Negative IDs not allowed."};
+        console.error("Negative IDs not allowed.");
     }
 
     if (request_id > todo_list.length - 1) {
         return_status = 400;
         return_data = {error: "ID does not exist."};
+        console.error("ID does not exist.");
     }
 
     if (request_id >= 0 && request_id <= todo_list.length - 1) {
         todo_list.splice(request_id, 1);
         return_status = 200;
         return_data = {message: "Deleted."};
+        console.info("Item deleted.");
     }
     res.status(return_status).json(return_data);
 }
@@ -85,23 +93,28 @@ function update_todo(req, res) {
     if(!item_defined) {
         return_status = 400;
         return_data = {error: "Requested item does not exist."};
+        console.error("Requested todo does not exist.");
     }
 
     if (item_defined && !todo_provided) {
         return_status = 400;
         return_data.error = "Field 'todo' required.";
+        console.error("Field todo required for update.");
     }
 
     if (item_defined && todo_provided && todo_empty) {
         return_status = 400;
         return_data.error = "Field 'todo' cannot be empty.";
+        console.error("Field todo cannot be empty.");
     }
 
     if (item_defined && todo_provided && !todo_empty) {
+        console.error("Updating todo, original:" + todo_list[request_id]);
         let escaped_todo = encodeURIComponent(req.body.todo);
         todo_list[request_id] = escaped_todo;
         return_status = 200;
-        return_data = {id: request_id, todo: escaped_todo}
+        return_data = {id: request_id, todo: escaped_todo};
+        console.error("Updated todo, new:" + return_data);
     }
 
     res.status(return_status).json(return_data);

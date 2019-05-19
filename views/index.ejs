@@ -5,29 +5,96 @@
         <style>
             a {text-decoration: none; color: black;}
         </style>
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
-        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
         <script>
-            console.log("Loading.");
+            function delete_todo(id) {
+                console.log("Deleting todo " + id);
+            }
 
-            function send_data(data_type) {
-                console.log(`Submitting data ${data_type}`);
+            function display_edit(id) {
+                console.log("Changing display to edit todo " + id);
+            }
+
+            function create_todo(event) {
+                event.preventDefault();
+                console.log("Submitting new to do");
+                let form = document.getElementById("main_form");
+                let submit_btn = document.getElementById("form_submit");
+
+                let new_todo = document.getElementById("todo_input").value;
+                let todo_json = JSON.stringify({todo: new_todo});
+
+                submit_btn.disabled = true;
+
+                let xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 201) {
+                        document.getElementById("main_form").reset();
+                        submit_btn.disabled = false;
+                        load_todo_list();
+                    }
+                };
+                xhttp.open("POST", "/todo/", true);
+                xhttp.setRequestHeader("Content-type", "application/json");
+                xhttp.send(todo_json);
+            }
+
+            function load_todo_list() {
+                console.log("Getting todo list.");
+                let xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        display_todo_list(this);
+                    }
+                };
+                xhttp.open("GET", "/todo/", true);
+                xhttp.send();
+            }
+
+            function display_todo_list(xhttp) {
+                let todo_list = JSON.parse(xhttp.responseText);
+                const list_area = document.getElementById("list_area");
+
+                if (todo_list.length === 0) {
+                    list_area.innerText = "No To Do items yet";
+                } else {
+                    let ul = document.createElement("ul");
+                    todo_list.forEach((value) => {
+                        let li_contents =
+                            '<a href="#" onclick="delete_todo('
+                            + value.id + ')">✘</a>' +
+                            '&nbsp;|&nbsp;' +
+                            '<a href="#" onclick="display_edit('
+                            + value.id + ')">✎</a>' +
+                            '&nbsp;|&nbsp;' + value.todo;
+                        let li = document.createElement("li");
+                        li.setAttribute("id", "todo-" + value.id);
+                        li.innerHTML = li_contents;
+                        ul.appendChild(li);
+                    })
+                    list_area.innerHTML = "";
+                    list_area.appendChild(ul);
+                }
             }
         </script>
     </head>
 
     <body>
         <h1>My To Do List</h1>
-        <div class="list_area"></div>
+        <div id="list_area">Loading...</div>
         <div class="edit_area">
             <h1 class="edit_header">Add new todo</h1>
-            <form name="main">
+            <form id="main_form" name="main_form">
                 <p>
-                    <label for="todo">What should I do?</label>
-                    <input type="text" name="todo" id="todo" autofocus />
-                    <input type="submit" onclick="send_data('new');"/>
+                    <label for="todo_input">What should I do?</label>
+                    <input type="text" name="todo" id="todo_input" autofocus />
+                    <input id="form_submit" type="submit" />
                 </p>
             </form>
         </div>
+        <script>
+            load_todo_list();
+            const main_form = document.getElementById("main_form");
+            main_form.addEventListener("submit", create_todo);
+        </script>
     </body>
 </html>
