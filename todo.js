@@ -38,9 +38,10 @@ function create_todo(req, res) {
     }
 
     if (todo_provided && !todo_empty) {
-        let idx = todo_list.push(req.body.todo) -1;
+        let escaped_todo = encodeURIComponent(req.body.todo);
+        let idx = todo_list.push(escaped_todo) -1;
         return_status = 201;
-        return_data = {id: idx, todo: req.body.todo}
+        return_data = {id: idx, todo: escaped_todo};
     }
 
     res.status(return_status).json(return_data);
@@ -97,9 +98,10 @@ function update_todo(req, res) {
     }
 
     if (item_defined && todo_provided && !todo_empty) {
-        todo_list[request_id] = req.body.todo;
+        let escaped_todo = encodeURIComponent(req.body.todo);
+        todo_list[request_id] = escaped_todo;
         return_status = 200;
-        return_data = {id: request_id, todo: req.body.todo}
+        return_data = {id: request_id, todo: escaped_todo}
     }
 
     res.status(return_status).json(return_data);
