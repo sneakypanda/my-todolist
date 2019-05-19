@@ -12,7 +12,7 @@ case $CMD in
         docker system prune
     ;;
     "run")
-        docker run --name ${TAG} -dP ${TAG}
+        docker run --name ${APP}-${VERSION} -dP ${TAG}
     ;;
     *)
     echo "Invalid option. Options are:"

@@ -53,3 +53,10 @@ To run the built container locally run `./manage.py run`.
 #### Bonus 4
 Coverage is measured using sinon and mocha -- run tests with coverage using `npm test`.
 
+#### Bonus 5
+The XSS vulnerability was caused by user input not be sanitized.
+I fixed this by encoding the characters which are used for tags and scripts.
+Adding a test for this was more difficult since it necessitated parsing already rendered HTML.
+Additionally, the tests for some of the other functionality had problems with branch coverage.
+As a solution I converted the application into a JSON API, allowing testing the server functionality properly, including the XSS vulnerability.
+
