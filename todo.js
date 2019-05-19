@@ -74,7 +74,7 @@ function delete_todo(req, res) {
         todo_list.splice(request_id, 1);
         return_status = 200;
         return_data = {message: "Deleted."};
-        console.info("Item deleted.");
+        console.info("Item id " + request_id + " deleted.");
     }
     res.status(return_status).json(return_data);
 }
