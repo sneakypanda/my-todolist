@@ -114,7 +114,7 @@ function update_todo(req, res) {
         todo_list[request_id] = escaped_todo;
         return_status = 200;
         return_data = {id: request_id, todo: escaped_todo};
-        console.error("Updated todo, new:" + return_data);
+        console.error("Updated todo, new:" + JSON.stringify(return_data));
     }
 
     res.status(return_status).json(return_data);

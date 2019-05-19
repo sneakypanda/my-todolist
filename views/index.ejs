@@ -6,6 +6,18 @@
             a {text-decoration: none; color: black;}
         </style>
         <script>
+            function mediate_submit(event) {
+                let sub_type = document.getElementById("submission_type").value;
+                if (sub_type === "create") {
+                    console.log("Submission is a create.");
+                    create_todo(event);
+                }
+                if (sub_type === "update") {
+                    console.log("Submission is an update.");
+                    update_todo(event);
+                }
+            }
+
             function delete_todo(id) {
                 console.log("Deleting todo " + id);
                 let url = "/todo/" + id;
@@ -22,12 +34,24 @@
 
             function display_edit(id) {
                 console.log("Changing display to edit todo " + id);
+                let todo = document.getElementById("todo-" + id);
+
+                let edit_header = document.getElementById("edit_header");
+                let submit_btn = document.getElementById("form_submit");
+                let todo_input = document.getElementById("todo_input");
+                let med_input = document.getElementById("submission_type");
+                let id_input = document.getElementById("todo_id");
+
+                edit_header.innerText = "Editing To Do " + id;
+                todo_input.value = todo.innerHTML;
+                med_input.value = "update";
+                submit_btn.value = "Update To Do";
+                id_input.value = id;
             }
 
             function create_todo(event) {
                 event.preventDefault();
                 console.log("Submitting new to do");
-                let form = document.getElementById("main_form");
                 let submit_btn = document.getElementById("form_submit");
 
                 let new_todo = document.getElementById("todo_input").value;
@@ -44,6 +68,38 @@
                     }
                 };
                 xhttp.open("POST", "/todo/", true);
+                xhttp.setRequestHeader("Content-type", "application/json");
+                xhttp.send(todo_json);
+            }
+
+            function update_todo(event) {
+                event.preventDefault();
+                console.log("Updating todo");
+                let submit_btn = document.getElementById("form_submit");
+                let edit_header = document.getElementById("edit_header");
+                let id_input = document.getElementById("todo_id");
+
+                let todo = document.getElementById("todo_input").value;
+                let todo_id = document.getElementById("todo_id").value;
+
+                submit_btn.disabled = true;
+
+                let xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+
+                        document.getElementById("main_form").reset();
+                        submit_btn.disabled = false;
+                        submit_btn.value = "Create To Do";
+                        edit_header.innerText = "Add new todo";
+                        id_input.value = "-1";
+
+                        load_todo_list();
+                    }
+                };
+                let url = "/todo/" + todo_id;
+                let todo_json = JSON.stringify({todo: todo});
+                xhttp.open("PATCH", url, true);
                 xhttp.setRequestHeader("Content-type", "application/json");
                 xhttp.send(todo_json);
             }
@@ -70,15 +126,16 @@
                 } else {
                     let ol = document.createElement("ol");
                     todo_list.forEach((value) => {
-                        let li_contents =
-                            '<a href="#" onclick="delete_todo('
-                            + value.id + ')">✘</a>' +
-                            '&nbsp;|&nbsp;' +
-                            '<a href="#" onclick="display_edit('
-                            + value.id + ')">✎</a>' +
-                            '&nbsp;|&nbsp;' + value.todo;
+                        let li_contents = "";
+                        li_contents += '<a href="#" onclick="delete_todo(';
+                        li_contents += value.id + ')">✘</a>';
+                        li_contents += '&nbsp;|&nbsp;';
+                        li_contents += '<a href="#" onclick="display_edit(';
+                        li_contents += value.id + ')">✎</a>';
+                        li_contents += '&nbsp;|&nbsp;';
+                        li_contents += '<span id="todo-' + value.id + '">';
+                        li_contents += value.todo + '</span>';
                         let li = document.createElement("li");
-                        li.setAttribute("id", "todo-" + value.id);
                         li.innerHTML = li_contents;
                         ol.appendChild(li);
                     })
@@ -99,19 +156,21 @@
             Loading...
         </div>
         <div class="edit_area">
-            <h1 class="edit_header">Add new todo</h1>
+            <h1 id="edit_header">Add new todo</h1>
             <form id="main_form" name="main_form">
                 <p>
                     <label for="todo_input">What should I do?</label>
                     <input type="text" name="todo" id="todo_input" autofocus />
-                    <input id="form_submit" type="submit" />
+                    <input type="hidden" name="submission_type" id="submission_type" value="create"/>
+                    <input type="hidden" name="todo_id" id="todo_id" value=""/>
+                    <input id="form_submit" type="submit" value="Create To Do"/>
                 </p>
             </form>
         </div>
         <script>
             load_todo_list();
             const main_form = document.getElementById("main_form");
-            main_form.addEventListener("submit", create_todo);
+            main_form.addEventListener("submit", mediate_submit);
         </script>
     </body>
 </html>
