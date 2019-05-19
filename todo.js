@@ -43,6 +43,7 @@ function create_todo(req, res) {
 
     if (todo_provided && !todo_empty) {
         let escaped_todo = encodeURIComponent(req.body.todo);
+        escaped_todo = escaped_todo.replace("%20", " ");
         let idx = todo_list.push(escaped_todo) -1;
         return_status = 201;
         return_data = {id: idx, todo: escaped_todo};
@@ -111,6 +112,7 @@ function update_todo(req, res) {
     if (item_defined && todo_provided && !todo_empty) {
         console.error("Updating todo, original:" + todo_list[request_id]);
         let escaped_todo = encodeURIComponent(req.body.todo);
+        escaped_todo = escaped_todo.replace("%20", " ");
         todo_list[request_id] = escaped_todo;
         return_status = 200;
         return_data = {id: request_id, todo: escaped_todo};
