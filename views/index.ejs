@@ -120,9 +120,15 @@
             function display_todo_list(xhttp) {
                 let todo_list = JSON.parse(xhttp.responseText);
                 const list_area = document.getElementById("list_area");
+                list_area.innerHTML = "";
+                let header = document.createElement("h1");
 
                 if (todo_list.length === 0) {
-                    list_area.innerText = "No To Do items yet";
+                    header.innerHTML = "My To Do List (0 items)";
+                    let placeholder = document.createElement("p")
+                    placeholder.innerHTML = "No to do items yet";
+                    list_area.appendChild(header);
+                    list_area.appendChild(placeholder);
                 } else {
                     let ol = document.createElement("ol");
                     todo_list.forEach((value) => {
@@ -139,8 +145,6 @@
                         li.innerHTML = li_contents;
                         ol.appendChild(li);
                     })
-                    list_area.innerHTML = "";
-                    let header = document.createElement("h1");
                     header.innerHTML = "My To Do List ("
                         + todo_list.length + " items)";
                     list_area.appendChild(header);
