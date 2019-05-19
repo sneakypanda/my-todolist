@@ -50,6 +50,9 @@ There is also a simple management script to handle building and running the cont
 To build the container run `./manage.py build`.
 To run the built container locally run `./manage.py run`.
 
+Additionally, a simple Kubernetes deployment is available if a locally running version of Kubernetes is available.
+This can be tested using `./manage.py mini` to handle building and deploying on the local minikube installation.
+
 #### Bonus 4
 Coverage is measured using sinon and mocha -- run tests with coverage using `npm test`.
 
