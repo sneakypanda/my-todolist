@@ -78,6 +78,7 @@
                 let submit_btn = document.getElementById("form_submit");
                 let edit_header = document.getElementById("edit_header");
                 let id_input = document.getElementById("todo_id");
+                let med_input = document.getElementById("submission_type");
 
                 let todo = document.getElementById("todo_input").value;
                 let todo_id = document.getElementById("todo_id").value;
@@ -93,6 +94,7 @@
                         submit_btn.value = "Create To Do";
                         edit_header.innerText = "Add new todo";
                         id_input.value = "-1";
+                        med_input.value = "create";
 
                         load_todo_list();
                     }
